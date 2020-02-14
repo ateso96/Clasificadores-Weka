@@ -32,6 +32,8 @@ public class Utilidades {
 			mUtilidades = new Utilidades();
 		return mUtilidades;
 	}
+	
+	/* METODOS PARA EL PREPROCESADO DE DATOS */
 
 	public Instances cargarDatos(String pFichero) throws Exception {
 
@@ -72,6 +74,10 @@ public class Utilidades {
 
 		return newData;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/* METODOS PARA REALIZAR LAS DIFERENTES EVALUACIONES */
 
 	public Evaluation crossValidation(Classifier pClasificador, Instances pData, int pFolds, String pFichero)
 			throws Exception {
@@ -82,21 +88,25 @@ public class Utilidades {
 		return evaluator;
 	}
 
-	public Evaluation holdOut(Classifier pClasificador, Instances pTrain, Instances pTest) throws Exception {
+	public Evaluation holdOut(Classifier pClasificador, Instances pTrain, Instances pTest, String pFichero) throws Exception {
 		pClasificador.buildClassifier(pTrain);
-		SerializationHelper.write("modelo.model", pClasificador);
+		SerializationHelper.write(pFichero, pClasificador);
 		Evaluation evaluation = new Evaluation(pTrain);
 		evaluation.evaluateModel(pClasificador, pTest);
 		return evaluation;
 	}
 
-	public Evaluation noHonesta(Classifier pClasificador, Instances pData) throws Exception {
+	public Evaluation noHonesta(Classifier pClasificador, Instances pData, String pFichero) throws Exception {
 		pClasificador.buildClassifier(pData);
-		SerializationHelper.write("modelo.model", pClasificador);
+		SerializationHelper.write(pFichero, pClasificador);
 		Evaluation evaluation = new Evaluation(pData);
 		evaluation.evaluateModel(pClasificador, pData);
 		return evaluation;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/* BARRIDO DE PARAMETROS KNN */
 
 	public IBk configurarIBk(Instances pData) throws Exception {
 		int bestK = 1;
@@ -192,6 +202,8 @@ public class Utilidades {
 		}
 		return estimador;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private int getIndClaseMinoritaria(Instances pData) {
 		int ind = pData.classIndex();
