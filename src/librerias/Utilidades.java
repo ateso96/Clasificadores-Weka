@@ -222,61 +222,38 @@ public class Utilidades {
 			kMax = pData.numInstances();
 		else
 			kMax = (int) (pData.numInstances() * 0.4);
+		
+		int bestI = 0;
+		int bestK = 0;
 		double bestF = 0;
 
 		int minClassIndex = getIndClaseMinoritaria(pData);
-		RandomForest cls;
+		RandomForest cls = new RandomForest();
 		Evaluation eval;
 
 		System.out.println("Searching best parameters...\n");
 
-		for (int i = 1; i <= kMax * 0.4; k++) {
-			for (int w = 1; w <= 3; w++) {
-				// Manhattan con WEIGHT_SIMILARITY casca, por lo que nos lo saltamos
-				if (d != 1 || w != 2) {
-					cls = getKNN(pData, k, d, w);
-					eval = new Evaluation(pData);
-					eval.crossValidateModel(cls, pData, 10, new Random(1));
+		for (int i = 1; i <= numArboles; i++) {
+			cls.setMaxDepth(i);
+			for (int k = 1; k < kMax; k++) {
+				cls.setNumFeatures(k);
+				eval = new Evaluation(pData);
+				eval.evaluateModel(cls, pData);
 					if (eval.fMeasure(minClassIndex) > bestF) {
 						bestK = k;
-						bestDistance = d;
-						bestWeight = w;
+						bestI = i;
 						bestF = eval.fMeasure(minClassIndex);
 					}
-				}
 			}
 		}
 
-		cls = getKNN(pData, bestK, bestDistance, bestWeight);
+		cls = new RandomForest();
+		cls.setMaxDepth(bestI);
+		cls.setNumFeatures(bestK);
 		System.out.println("################################");
-		System.out.println("BEST IBk PARAMETERS:");
-		System.out.println("KNN: " + bestK);
-		switch (bestDistance) {
-		case 1:
-			System.out.println("Distance function: Manhattan Distance");
-			break;
-		case 2:
-			System.out.println("Distance function: Euclidean Distance");
-			break;
-		case 3:
-			System.out.println("Distance function: Chebyshev Distance");
-			break;
-		default:
-			break;
-		}
-		switch (bestWeight) {
-		case 1:
-			System.out.println("Distance weighting: Weight by 1/distance");
-			break;
-		case 2:
-			System.out.println("Distance weighting: No distance weighting");
-			break;
-		case 3:
-			System.out.println("Distance weighting: Weight by 1 - distance");
-			break;
-		default:
-			break;
-		}
+		System.out.println("BEST RANDOM FOREST PARAMETERS:");
+		System.out.println("DEPTH: " + bestK);
+		System.out.println("FEATURES: " + bestI);
 		System.out.println("################################");
 		return cls;
 	}
