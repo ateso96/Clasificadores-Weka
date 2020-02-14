@@ -33,7 +33,7 @@ public class Utilidades {
 			mUtilidades = new Utilidades();
 		return mUtilidades;
 	}
-	
+
 	/* METODOS PARA EL PREPROCESADO DE DATOS */
 
 	public Instances cargarDatos(String pFichero) throws Exception {
@@ -75,9 +75,9 @@ public class Utilidades {
 
 		return newData;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/* METODOS PARA REALIZAR LAS DIFERENTES EVALUACIONES */
 
 	public Evaluation crossValidation(Classifier pClasificador, Instances pData, int pFolds, String pFichero)
@@ -89,7 +89,8 @@ public class Utilidades {
 		return evaluator;
 	}
 
-	public Evaluation holdOut(Classifier pClasificador, Instances pTrain, Instances pTest, String pFichero) throws Exception {
+	public Evaluation holdOut(Classifier pClasificador, Instances pTrain, Instances pTest, String pFichero)
+			throws Exception {
 		pClasificador.buildClassifier(pTrain);
 		SerializationHelper.write(pFichero, pClasificador);
 		Evaluation evaluation = new Evaluation(pTrain);
@@ -104,9 +105,9 @@ public class Utilidades {
 		evaluation.evaluateModel(pClasificador, pData);
 		return evaluation;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/* BARRIDO DE PARAMETROS KNN */
 
 	public IBk configurarIBk(Instances pData) throws Exception {
@@ -117,10 +118,16 @@ public class Utilidades {
 		int minClassIndex = getIndClaseMinoritaria(pData);
 		IBk cls;
 		Evaluation eval;
-		
+
 		System.out.println("Searching best parameters...\n");
 
-		for (int k = 1; k <= pData.numInstances() * 0.4; k++) {
+		int kMax;
+		if (pData.numInstances() <= 150)
+			kMax = pData.numInstances();
+		else
+			kMax = (int) (pData.numInstances() * 0.4);
+
+		for (int k = 1; k <= kMax; k++) {
 			for (int w = 1; w <= 3; w++) {
 				for (int d = 1; d <= 3; d++) {
 					// Manhattan con WEIGHT_SIMILARITY casca, por lo que nos lo saltamos
@@ -138,7 +145,7 @@ public class Utilidades {
 				}
 			}
 		}
-		
+
 		cls = getKNN(pData, bestK, bestDistance, bestWeight);
 		System.out.println("################################");
 		System.out.println("BEST IBk PARAMETERS:");
@@ -203,41 +210,43 @@ public class Utilidades {
 		}
 		return estimador;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/* BARRIDO DE PARAMETROS RANDOM FOREST */
-	
+
 	public RandomForest configurarRandomForest(Instances pData) throws Exception {
-		int bestK = 1;
-		int bestDistance = 1;
-		int bestWeight = 1;
+		int numArboles = 1000;
+		int kMax;
+		if (pData.numInstances() <= 150)
+			kMax = pData.numInstances();
+		else
+			kMax = (int) (pData.numInstances() * 0.4);
 		double bestF = 0;
+
 		int minClassIndex = getIndClaseMinoritaria(pData);
 		RandomForest cls;
 		Evaluation eval;
-		
+
 		System.out.println("Searching best parameters...\n");
 
-		for (int k = 1; k <= pData.numInstances() * 0.4; k++) {
+		for (int i = 1; i <= kMax * 0.4; k++) {
 			for (int w = 1; w <= 3; w++) {
-				for (int d = 1; d <= 3; d++) {
-					// Manhattan con WEIGHT_SIMILARITY casca, por lo que nos lo saltamos
-					if (d != 1 || w != 2) {
-						cls = getKNN(pData, k, d, w);
-						eval = new Evaluation(pData);
-						eval.crossValidateModel(cls, pData, 10, new Random(1));
-						if (eval.fMeasure(minClassIndex) > bestF) {
-							bestK = k;
-							bestDistance = d;
-							bestWeight = w;
-							bestF = eval.fMeasure(minClassIndex);
-						}
+				// Manhattan con WEIGHT_SIMILARITY casca, por lo que nos lo saltamos
+				if (d != 1 || w != 2) {
+					cls = getKNN(pData, k, d, w);
+					eval = new Evaluation(pData);
+					eval.crossValidateModel(cls, pData, 10, new Random(1));
+					if (eval.fMeasure(minClassIndex) > bestF) {
+						bestK = k;
+						bestDistance = d;
+						bestWeight = w;
+						bestF = eval.fMeasure(minClassIndex);
 					}
 				}
 			}
 		}
-		
+
 		cls = getKNN(pData, bestK, bestDistance, bestWeight);
 		System.out.println("################################");
 		System.out.println("BEST IBk PARAMETERS:");
@@ -271,9 +280,9 @@ public class Utilidades {
 		System.out.println("################################");
 		return cls;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	private int getIndClaseMinoritaria(Instances pData) {
 		int ind = pData.classIndex();
 		AttributeStats stats = pData.attributeStats(ind);
@@ -281,7 +290,7 @@ public class Utilidades {
 		int frecMin = frecuencias[0];
 		int index = 0;
 		int res = 0;
-		for (int f: frecuencias) {
+		for (int f : frecuencias) {
 			if (f < frecMin && f != 0) {
 				frecMin = f;
 				res = index;
@@ -290,7 +299,7 @@ public class Utilidades {
 		}
 		return res;
 	}
-	
+
 	private double getFMeasure(Evaluation pEval, Instances pData) {
 		Attribute classA = pData.classAttribute();
 
