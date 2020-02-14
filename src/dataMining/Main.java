@@ -44,11 +44,18 @@ public class Main {
 
 			/* 3. Inicializar clasificador kNN */
 			IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
-			//clasificador.buildClassifier(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CroosValidation */
 			Evaluation evaluator = Utilidades.getUtilidades().crossValidation(clasificador, newData, 10, args[2]);
+			
+			/* 4.2. Hold-out */
+//			Ficheros.getFicheros().guardarResultados(test.toString(), "test.arff");
+//			Evaluation evaluator = Utilidades.getUtilidades().holdOut(clasificador, train, test, args[2]);
+			
+			/* 4.3. No Honesta*/
+//			newData.randomize(new Random(1));
+//			Evaluation evaluator = Utilidades.getUtilidades().noHonesta(clasificador, newData, args[2]);
 			
 
 			/* 5. Mostrar y guardar resultados */
