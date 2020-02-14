@@ -5,6 +5,7 @@ import java.util.Random;
 import librerias.Utilidades;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
@@ -42,8 +43,12 @@ public class Main {
 			Instances train = new Instances(newData, 0, insTrain - 1);
 			Instances test = new Instances(newData, insTrain, insTest - 1);
 
-			/* 3. Inicializar clasificador kNN */
-			IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
+			/* Clasificadores */
+			/* 3.1. Inicializar clasificador kNN */
+			///IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
+			
+			/* 3.2. Inicializar clasificador Random Forest */
+			RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CroosValidation */
