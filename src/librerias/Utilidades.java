@@ -216,7 +216,7 @@ public class Utilidades {
 	/* BARRIDO DE PARAMETROS RANDOM FOREST */
 
 	public RandomForest configurarRandomForest(Instances pData) throws Exception {
-		int numArboles = 1000;
+		int numArboles = 10;
 		int kMax;
 		if (pData.numInstances() <= 150)
 			kMax = pData.numInstances();
@@ -237,6 +237,7 @@ public class Utilidades {
 			cls.setMaxDepth(i);
 			for (int k = 1; k < kMax; k++) {
 				cls.setNumFeatures(k);
+				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
 				eval.evaluateModel(cls, pData);
 					if (eval.fMeasure(minClassIndex) > bestF) {
