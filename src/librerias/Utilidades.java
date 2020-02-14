@@ -10,6 +10,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.CVParameterSelection;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.AttributeStats;
 import weka.core.ChebyshevDistance;
@@ -206,6 +207,70 @@ public class Utilidades {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/* BARRIDO DE PARAMETROS RANDOM FOREST */
+	
+	public RandomForest configurarRandomForest(Instances pData) throws Exception {
+		int bestK = 1;
+		int bestDistance = 1;
+		int bestWeight = 1;
+		double bestF = 0;
+		int minClassIndex = getIndClaseMinoritaria(pData);
+		RandomForest cls;
+		Evaluation eval;
+		
+		System.out.println("Searching best parameters...\n");
+
+		for (int k = 1; k <= pData.numInstances() * 0.4; k++) {
+			for (int w = 1; w <= 3; w++) {
+				for (int d = 1; d <= 3; d++) {
+					// Manhattan con WEIGHT_SIMILARITY casca, por lo que nos lo saltamos
+					if (d != 1 || w != 2) {
+						cls = getKNN(pData, k, d, w);
+						eval = new Evaluation(pData);
+						eval.crossValidateModel(cls, pData, 10, new Random(1));
+						if (eval.fMeasure(minClassIndex) > bestF) {
+							bestK = k;
+							bestDistance = d;
+							bestWeight = w;
+							bestF = eval.fMeasure(minClassIndex);
+						}
+					}
+				}
+			}
+		}
+		
+		cls = getKNN(pData, bestK, bestDistance, bestWeight);
+		System.out.println("################################");
+		System.out.println("BEST IBk PARAMETERS:");
+		System.out.println("KNN: " + bestK);
+		switch (bestDistance) {
+		case 1:
+			System.out.println("Distance function: Manhattan Distance");
+			break;
+		case 2:
+			System.out.println("Distance function: Euclidean Distance");
+			break;
+		case 3:
+			System.out.println("Distance function: Chebyshev Distance");
+			break;
+		default:
+			break;
+		}
+		switch (bestWeight) {
+		case 1:
+			System.out.println("Distance weighting: Weight by 1/distance");
+			break;
+		case 2:
+			System.out.println("Distance weighting: No distance weighting");
+			break;
+		case 3:
+			System.out.println("Distance weighting: Weight by 1 - distance");
+			break;
+		default:
+			break;
+		}
+		System.out.println("################################");
+		return cls;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
