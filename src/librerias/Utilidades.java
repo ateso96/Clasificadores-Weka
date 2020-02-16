@@ -216,47 +216,58 @@ public class Utilidades {
 	/* BARRIDO DE PARAMETROS RANDOM FOREST */
 
 	public RandomForest configurarRandomForest(Instances pData) throws Exception {
-		int numArboles = 10;
-		int kMax;
-		if (pData.numInstances() <= 150)
-			kMax = pData.numInstances();
-		else
-			kMax = (int) (pData.numInstances() * 0.4);
-		
+		int numArboles = 1000;
+		int kMax = Double.valueOf(Math.sqrt(Double.valueOf(pData.numAttributes()))).intValue();
+
 		int bestI = 0;
 		int bestK = 0;
 		double bestF = 0;
+		double fAnt = 0;
 
-		int minClassIndex = getIndClaseMinoritaria(pData);
 		RandomForest cls = new RandomForest();
 		Evaluation eval;
 
 		System.out.println("Searching best parameters...\n");
 
 		for (int i = 1; i <= numArboles; i++) {
-			cls.setMaxDepth(i);
-			for (int k = 1; k < kMax; k++) {
+			cls.setNumIterations(i);
+			for (int k = 1; k <= kMax; k++) {
 				cls.setNumFeatures(k);
 				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
 				eval.evaluateModel(cls, pData);
-					if (eval.fMeasure(minClassIndex) > bestF) {
-						bestK = k;
-						bestI = i;
-						bestF = eval.fMeasure(minClassIndex);
-					}
+				if (eval.fMeasure(0) > bestF) {
+					bestK = k;
+					bestI = i;
+					bestF = eval.fMeasure(0);
+				}
+			}
+			if (i % 100 == 0 && fAnt != 0.0) {
+				if (pararBarridoRF(bestF, fAnt))
+					i = numArboles;
+				fAnt = bestF;
+			}
+			else if (i % 100 == 0 && fAnt == 0) {
+				fAnt = bestF;
 			}
 		}
 
 		cls = new RandomForest();
-		cls.setMaxDepth(bestI);
+		cls.setNumIterations(bestI);
 		cls.setNumFeatures(bestK);
 		System.out.println("################################");
 		System.out.println("BEST RANDOM FOREST PARAMETERS:");
-		System.out.println("DEPTH: " + bestK);
-		System.out.println("FEATURES: " + bestI);
+		System.out.println("ITERATIONS: " + bestI);
+		System.out.println("FEATURES: " + bestK);
 		System.out.println("################################");
 		return cls;
+	}
+	
+	private boolean pararBarridoRF(double fMeasureAct, double fMeasurePre) {
+		if (fMeasureAct - fMeasurePre < 0.05) 
+			return true;
+		else
+			return false;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
