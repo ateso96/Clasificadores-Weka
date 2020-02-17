@@ -299,7 +299,7 @@ public class Utilidades {
 		cls = new OneR();
 		cls.setMinBucketSize(bestB);
 		System.out.println("################################");
-		System.out.println("BEST RANDOM FOREST PARAMETERS:");
+		System.out.println("BEST OneR PARAMETERS:");
 		System.out.println("BUCKET SIZE: " + bestB);
 		System.out.println("################################");
 		return cls;
