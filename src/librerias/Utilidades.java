@@ -10,6 +10,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.CVParameterSelection;
+import weka.classifiers.rules.OneR;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.AttributeStats;
@@ -272,6 +273,39 @@ public class Utilidades {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/* BARRIDO DE PARAMETROS ONE R */
+	
+	public OneR configurarOneR(Instances pData) throws Exception {
+		int bestB = 0;
+		double bestF = 0;
+
+		OneR cls;
+		Evaluation eval;
+
+		System.out.println("Searching best parameters...\n");
+
+		for (int b = 1; b <= pData.numInstances(); b++) {
+			cls = new OneR();
+			cls.setMinBucketSize(b);
+			eval = new Evaluation(pData);
+			eval.crossValidateModel(cls, pData, 10, new Random(1));
+			double fAct = eval.weightedFMeasure();
+			if (fAct > bestF) {
+				bestB = b;
+				bestF = fAct;
+			}
+		}
+
+		cls = new OneR();
+		cls.setMinBucketSize(bestB);
+		System.out.println("################################");
+		System.out.println("BEST RANDOM FOREST PARAMETERS:");
+		System.out.println("BUCKET SIZE: " + bestB);
+		System.out.println("################################");
+		return cls;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private int getIndClaseMinoritaria(Instances pData) {
 		int ind = pData.classIndex();
 		AttributeStats stats = pData.attributeStats(ind);
