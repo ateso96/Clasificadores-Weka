@@ -17,7 +17,7 @@ import weka.core.SerializationHelper;
 
 public class Main {
 	
-	private static double porcentajeSplit = 25.0;
+	private static double porcentajeSplit = 55.0;
 
 	public static void main(String[] args) throws Exception {
 
