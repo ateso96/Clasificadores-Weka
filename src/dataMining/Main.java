@@ -38,21 +38,22 @@ public class Main {
 				data.setClass(data.attribute("class"));
 			Instances newData = Utilidades.getUtilidades().filtrar(data);
 			
-			newData.randomize(new Random(1));
-			int insTrain = (int) (newData.size() * (porcentajeSplit / 100)); // Número de instancias para el train
-			int insTest = newData.size() - insTrain; // Número de instancias para el test
-			Instances train = new Instances(newData, 0, insTrain - 1);
-			Instances test = new Instances(newData, insTrain, insTest - 1);
+			/* Obtener train y test */
+//			newData.randomize(new Random(1));
+//			int insTrain = (int) (newData.size() * (porcentajeSplit / 100)); // Número de instancias para el train
+//			int insTest = newData.size() - insTrain; // Número de instancias para el test
+//			Instances train = new Instances(newData, 0, insTrain - 1);
+//			Instances test = new Instances(newData, insTrain, insTest - 1);
 
 			/* Clasificadores */
 			/* 3.1. Inicializar clasificador kNN */
-			///IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
+			IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
 			
 			/* 3.2. Inicializar clasificador Random Forest */
 			//RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
 			
 			/* 3.3. Inicializar clasificador OneR */
-			OneR clasificador = Utilidades.getUtilidades().configurarOneR(newData);
+			//OneR clasificador = Utilidades.getUtilidades().configurarOneR(newData);
 			
 			
 			/* 4. Hacer la evaluación */
