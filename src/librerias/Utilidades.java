@@ -219,7 +219,7 @@ public class Utilidades {
 	/* BARRIDO DE PARAMETROS RANDOM FOREST */
 
 	public RandomForest configurarRandomForest(Instances pData) throws Exception {
-		int numArboles = 1000;
+		int numArboles = 1000;			//numIterations
 		int kMax = Double.valueOf(Math.sqrt(Double.valueOf(pData.numAttributes()))).intValue();
 
 		int bestI = 0;
