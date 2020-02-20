@@ -340,52 +340,35 @@ public class Utilidades {
 		return cls;
 	}
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/* BARRIDO DE PARAMETROS RANDOM FOREST */
+	/* BARRIDO DE PARAMETROS BAGGING */
 
 	public Bagging configurarBagging(Instances pData) throws Exception {
-		int numIterations = 1000;
-
-		int bestI = 0;
 		int bestB = 0;
 		double bestF = 0;
-		double fAnt = 0;
 
 		Bagging cls = new Bagging();
 		Evaluation eval;
 
 		System.out.println("Searching best parameters...\n");
 
-		for (int b = 0; b <= 100; b += 10) {
+		for (int b = 1; b <= 100; b++) {
 			cls.setBagSizePercent(b);
-			for (int i = 1; i <= numIterations; i++) {
-				cls.setNumIterations(i);
-				cls.buildClassifier(pData);
-				eval = new Evaluation(pData);
-				eval.crossValidateModel(cls, pData, 10, new Random(1));
-				if (eval.fMeasure(0) > bestF) {
-					bestB = b;
-					bestI = i;
-					bestF = eval.fMeasure(0);
-				}
-				if (i % 100 == 0 && fAnt != 0.0) {
-					if (pararBarrido(bestF, fAnt))
-						i = numIterations;
-					fAnt = bestF;
-				} else if (i % 100 == 0 && fAnt == 0) {
-					fAnt = bestF;
-				}
+			cls.buildClassifier(pData);
+			eval = new Evaluation(pData);
+			eval.crossValidateModel(cls, pData, 10, new Random(1));
+			if (eval.fMeasure(0) > bestF) {
+				bestB = b;
+				bestF = eval.fMeasure(0);
 			}
 		}
 
 		cls = new Bagging();
-		cls.setNumIterations(bestI);
 		cls.setBagSizePercent(bestB);
 		System.out.println("################################");
 		System.out.println("BEST BAGGING PARAMETERS:");
 		System.out.println("BAG SIZE PERCENT: " + bestB);
-		System.out.println("ITERATIONS: " + bestI);
 		System.out.println("################################");
 		return cls;
 	}
