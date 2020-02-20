@@ -64,11 +64,11 @@ public class Main {
 			/* 3.5. Inicializar clasificador Bagging */
 			//Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
 			
-			/* 3.6. Inicializar clasificador Bagging */
+			/* 3.6. Inicializar clasificador J48 */
 			J48 clasificador = Utilidades.getUtilidades().configurarJ48(newData);
 			
 			/* 4. Hacer la evaluación */
-			/* 4.1. CroosValidation */
+			/* 4.1. CrossValidation */
 			Evaluation evaluator = Utilidades.getUtilidades().crossValidation(clasificador, newData, 10, args[2]);
 			
 			/* 4.2. Hold-out */

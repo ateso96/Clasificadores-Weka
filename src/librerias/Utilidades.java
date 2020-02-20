@@ -379,7 +379,7 @@ public class Utilidades {
 	/* BARRIDO DE PARAMETROS J48 */
 
 	public J48 configurarJ48(Instances pData) throws Exception {
-		int bestFolds = 1;
+		int bestFolds = 1; //Num vueltas
 		int bestI = 0;
 		double bestF = 0;
 
