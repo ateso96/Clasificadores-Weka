@@ -387,7 +387,7 @@ public class Utilidades {
 		if (pData.numInstances() <= 50)
 			maxI = pData.numInstances();
 		else
-			maxI = (int) (pData.numInstances() * 0.2);
+			maxI = (int) (pData.numInstances() * 0.4);
 
 		J48 cls = new J48();
 		Evaluation eval;
