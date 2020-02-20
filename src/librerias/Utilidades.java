@@ -384,7 +384,7 @@ public class Utilidades {
 		double bestF = 0;
 
 		int maxI;
-		if (pData.numInstances() <= 50)
+		if (pData.numInstances() <= 150)
 			maxI = pData.numInstances();
 		else
 			maxI = (int) (pData.numInstances() * 0.4);
