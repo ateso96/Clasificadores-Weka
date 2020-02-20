@@ -236,7 +236,7 @@ public class Utilidades {
 		for (int i = 1; i <= numArboles; i++) {
 			cls.setNumIterations(i);
 			for (int k = 1; k <= kMax; k++) {
-				cls.setNumFeatures(k);
+				cls.setNumFeatures(k);  		//numFeatures
 				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
 				eval.evaluateModel(cls, pData);
