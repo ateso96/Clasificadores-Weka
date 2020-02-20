@@ -5,6 +5,7 @@ import java.util.Random;
 import librerias.Utilidades;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
+import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.RandomForest;
@@ -57,7 +58,10 @@ public class Main {
 			//OneR clasificador = Utilidades.getUtilidades().configurarOneR(newData);
 			
 			/* 3.4. Inicializar clasificador ZeroR */
-			ZeroR clasificador = Utilidades.getUtilidades().configurarZeroR(newData);
+			//ZeroR clasificador = Utilidades.getUtilidades().configurarZeroR(newData);
+			
+			/* 3.5. Inicializar clasificador Bagging */
+			Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CroosValidation */

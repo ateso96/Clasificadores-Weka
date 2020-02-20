@@ -9,6 +9,7 @@ import weka.attributeSelection.CfsSubsetEval;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
+import weka.classifiers.meta.Bagging;
 import weka.classifiers.meta.CVParameterSelection;
 import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.ZeroR;
@@ -245,7 +246,7 @@ public class Utilidades {
 				}
 			}
 			if (i % 100 == 0 && fAnt != 0.0) {
-				if (pararBarridoRF(bestF, fAnt))
+				if (pararBarrido(bestF, fAnt))
 					i = numArboles;
 				fAnt = bestF;
 			} else if (i % 100 == 0 && fAnt == 0) {
@@ -264,7 +265,7 @@ public class Utilidades {
 		return cls;
 	}
 
-	private boolean pararBarridoRF(double fMeasureAct, double fMeasurePre) {
+	private boolean pararBarrido(double fMeasureAct, double fMeasurePre) {
 		if (fMeasureAct - fMeasurePre < 0.05)
 			return true;
 		else
@@ -340,6 +341,56 @@ public class Utilidades {
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/* BARRIDO DE PARAMETROS RANDOM FOREST */
+
+	public Bagging configurarBagging(Instances pData) throws Exception {
+		int numIterations = 1000;
+
+		int bestI = 0;
+		int bestB = 0;
+		double bestF = 0;
+		double fAnt = 0;
+
+		Bagging cls = new Bagging();
+		Evaluation eval;
+
+		System.out.println("Searching best parameters...\n");
+
+		for (int b = 0; b <= 100; b += 10) {
+			cls.setBagSizePercent(b);
+			for (int i = 1; i <= numIterations; i++) {
+				cls.setNumIterations(i);
+				cls.buildClassifier(pData);
+				eval = new Evaluation(pData);
+				eval.crossValidateModel(cls, pData, 10, new Random(1));
+				if (eval.fMeasure(0) > bestF) {
+					bestB = b;
+					bestI = i;
+					bestF = eval.fMeasure(0);
+				}
+				if (i % 100 == 0 && fAnt != 0.0) {
+					if (pararBarrido(bestF, fAnt))
+						i = numIterations;
+					fAnt = bestF;
+				} else if (i % 100 == 0 && fAnt == 0) {
+					fAnt = bestF;
+				}
+			}
+		}
+
+		cls = new Bagging();
+		cls.setNumIterations(bestI);
+		cls.setBagSizePercent(bestB);
+		System.out.println("################################");
+		System.out.println("BEST BAGGING PARAMETERS:");
+		System.out.println("BAG SIZE PERCENT: " + bestB);
+		System.out.println("ITERATIONS: " + bestI);
+		System.out.println("################################");
+		return cls;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private int getIndClaseMinoritaria(Instances pData) {
 		int ind = pData.classIndex();
