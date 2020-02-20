@@ -376,7 +376,7 @@ public class Utilidades {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/* BARRIDO DE PARAMETROS BAGGING */
+	/* BARRIDO DE PARAMETROS J48 */
 
 	public J48 configurarJ48(Instances pData) throws Exception {
 		int bestFolds = 1;
