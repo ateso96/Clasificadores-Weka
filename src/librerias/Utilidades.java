@@ -3,14 +3,12 @@ package librerias;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Random;
-
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
-import weka.classifiers.meta.CVParameterSelection;
 import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.J48;
