@@ -119,7 +119,6 @@ public class Utilidades {
 		int bestDistance = 1;
 		int bestWeight = 1;
 		double bestF = 0;
-		int minClassIndex = getIndClaseMinoritaria(pData);
 		IBk cls;
 		Evaluation eval;
 
@@ -139,11 +138,11 @@ public class Utilidades {
 						cls = getKNN(pData, k, d, w);
 						eval = new Evaluation(pData);
 						eval.crossValidateModel(cls, pData, 10, new Random(1));
-						if (eval.fMeasure(minClassIndex) > bestF) {
+						if (eval.fMeasure(0) > bestF) {
 							bestK = k;
 							bestDistance = d;
 							bestWeight = w;
-							bestF = eval.fMeasure(minClassIndex);
+							bestF = eval.fMeasure(0);
 						}
 					}
 				}
@@ -239,7 +238,7 @@ public class Utilidades {
 				cls.setNumFeatures(k);  		//numFeatures
 				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
-				eval.evaluateModel(cls, pData);
+				eval.crossValidateModel(cls, pData, 10, new Random(1));
 				if (eval.fMeasure(0) > bestF) {
 					bestK = k;
 					bestI = i;
@@ -291,7 +290,7 @@ public class Utilidades {
 			cls.setMinBucketSize(b);
 			eval = new Evaluation(pData);
 			eval.crossValidateModel(cls, pData, 10, new Random(1));
-			double fAct = eval.weightedFMeasure();
+			double fAct = eval.fMeasure(0);
 			if (fAct > bestF) {
 				bestB = b;
 				bestF = fAct;
@@ -325,7 +324,7 @@ public class Utilidades {
 			cls.setBatchSize(String.valueOf(b));
 			eval = new Evaluation(pData);
 			eval.crossValidateModel(cls, pData, 10, new Random(1));
-			double fAct = eval.weightedFMeasure();
+			double fAct = eval.fMeasure(0);
 			if (fAct > bestF) {
 				bestB = b;
 				bestF = fAct;
@@ -400,7 +399,7 @@ public class Utilidades {
 				cls.setNumFolds(f);
 				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
-				eval.evaluateModel(cls, pData);
+				eval.crossValidateModel(cls, pData, 10, new Random(1));
 				if (eval.fMeasure(0) > bestF) {
 					bestFolds = f;
 					bestI = i;

@@ -53,7 +53,7 @@ public class Main {
 			//IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
 			
 			/* 3.2. Inicializar clasificador Random Forest */
-			//RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
+			RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
 			
 			/* 3.3. Inicializar clasificador OneR */
 			//OneR clasificador = Utilidades.getUtilidades().configurarOneR(newData);
@@ -65,7 +65,7 @@ public class Main {
 			//Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
 			
 			/* 3.6. Inicializar clasificador J48 */
-			J48 clasificador = Utilidades.getUtilidades().configurarJ48(newData);
+			//J48 clasificador = Utilidades.getUtilidades().configurarJ48(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CrossValidation */
