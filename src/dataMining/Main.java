@@ -6,6 +6,7 @@ import librerias.Utilidades;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.rules.OneR;
+import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
@@ -47,7 +48,7 @@ public class Main {
 
 			/* Clasificadores */
 			/* 3.1. Inicializar clasificador kNN */
-			IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
+			//IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
 			
 			/* 3.2. Inicializar clasificador Random Forest */
 			//RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
@@ -55,6 +56,8 @@ public class Main {
 			/* 3.3. Inicializar clasificador OneR */
 			//OneR clasificador = Utilidades.getUtilidades().configurarOneR(newData);
 			
+			/* 3.4. Inicializar clasificador ZeroR */
+			ZeroR clasificador = Utilidades.getUtilidades().configurarZeroR(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CroosValidation */

@@ -11,6 +11,7 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.CVParameterSelection;
 import weka.classifiers.rules.OneR;
+import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.AttributeStats;
@@ -247,8 +248,7 @@ public class Utilidades {
 				if (pararBarridoRF(bestF, fAnt))
 					i = numArboles;
 				fAnt = bestF;
-			}
-			else if (i % 100 == 0 && fAnt == 0) {
+			} else if (i % 100 == 0 && fAnt == 0) {
 				fAnt = bestF;
 			}
 		}
@@ -263,9 +263,9 @@ public class Utilidades {
 		System.out.println("################################");
 		return cls;
 	}
-	
+
 	private boolean pararBarridoRF(double fMeasureAct, double fMeasurePre) {
-		if (fMeasureAct - fMeasurePre < 0.05) 
+		if (fMeasureAct - fMeasurePre < 0.05)
 			return true;
 		else
 			return false;
@@ -274,7 +274,7 @@ public class Utilidades {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/* BARRIDO DE PARAMETROS ONE R */
-	
+
 	public OneR configurarOneR(Instances pData) throws Exception {
 		int bestB = 0;
 		double bestF = 0;
@@ -304,8 +304,43 @@ public class Utilidades {
 		System.out.println("################################");
 		return cls;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/* BARRIDO DE PARAMETROS ZERO R */
+
+	public ZeroR configurarZeroR(Instances pData) throws Exception {
+		int bestB = 0;
+		double bestF = 0;
+
+		ZeroR cls;
+		Evaluation eval;
+
+		System.out.println("Searching best parameters...\n");
+
+		for (int b = 1; b <= pData.numInstances(); b++) {
+			cls = new ZeroR();
+			cls.setBatchSize(String.valueOf(b));
+			eval = new Evaluation(pData);
+			eval.crossValidateModel(cls, pData, 10, new Random(1));
+			double fAct = eval.weightedFMeasure();
+			if (fAct > bestF) {
+				bestB = b;
+				bestF = fAct;
+			}
+		}
+
+		cls = new ZeroR();
+		cls.setBatchSize(String.valueOf(bestB));
+		System.out.println("################################");
+		System.out.println("BEST ZeroR PARAMETERS:");
+		System.out.println("BATCH SIZE: " + bestB);
+		System.out.println("################################");
+		return cls;
+	}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private int getIndClaseMinoritaria(Instances pData) {
 		int ind = pData.classIndex();
 		AttributeStats stats = pData.attributeStats(ind);
