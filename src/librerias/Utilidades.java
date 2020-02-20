@@ -13,6 +13,7 @@ import weka.classifiers.meta.Bagging;
 import weka.classifiers.meta.CVParameterSelection;
 import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.ZeroR;
+import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.AttributeStats;
@@ -369,6 +370,52 @@ public class Utilidades {
 		System.out.println("################################");
 		System.out.println("BEST BAGGING PARAMETERS:");
 		System.out.println("BAG SIZE PERCENT: " + bestB);
+		System.out.println("################################");
+		return cls;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/* BARRIDO DE PARAMETROS BAGGING */
+
+	public J48 configurarJ48(Instances pData) throws Exception {
+		int bestFolds = 1;
+		int bestI = 0;
+		double bestF = 0;
+
+		int maxI;
+		if (pData.numInstances() <= 50)
+			maxI = pData.numInstances();
+		else
+			maxI = (int) (pData.numInstances() * 0.2);
+
+		J48 cls = new J48();
+		Evaluation eval;
+
+		System.out.println("Searching best parameters...\n");
+
+		for (int i = 1; i <= maxI; i++) {
+			cls.setMinNumObj(i);
+			for (int f = 1; f <= 10; f++) {
+				cls.setNumFolds(f);
+				cls.buildClassifier(pData);
+				eval = new Evaluation(pData);
+				eval.evaluateModel(cls, pData);
+				if (eval.fMeasure(0) > bestF) {
+					bestFolds = f;
+					bestI = i;
+					bestF = eval.fMeasure(0);
+				}
+			}
+		}
+
+		cls = new J48();
+		cls.setNumFolds(bestFolds);
+		cls.setMinNumObj(bestI);
+		System.out.println("################################");
+		System.out.println("BEST J48 PARAMETERS:");
+		System.out.println("MIN NUM OBJECTS: " + bestI);
+		System.out.println("NUM FOLDS: " + bestFolds);
 		System.out.println("################################");
 		return cls;
 	}

@@ -8,6 +8,7 @@ import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.ZeroR;
+import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
@@ -61,7 +62,10 @@ public class Main {
 			//ZeroR clasificador = Utilidades.getUtilidades().configurarZeroR(newData);
 			
 			/* 3.5. Inicializar clasificador Bagging */
-			Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
+			//Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
+			
+			/* 3.6. Inicializar clasificador Bagging */
+			J48 clasificador = Utilidades.getUtilidades().configurarJ48(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CroosValidation */
