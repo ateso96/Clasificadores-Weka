@@ -419,23 +419,6 @@ public class Utilidades {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private int getIndClaseMinoritaria(Instances pData) {
-		int ind = pData.classIndex();
-		AttributeStats stats = pData.attributeStats(ind);
-		int[] frecuencias = stats.nominalCounts;
-		int frecMin = frecuencias[0];
-		int index = 0;
-		int res = 0;
-		for (int f : frecuencias) {
-			if (f < frecMin && f != 0) {
-				frecMin = f;
-				res = index;
-			}
-			index++;
-		}
-		return res;
-	}
-
 	private double getFMeasure(Evaluation pEval, Instances pData) {
 		Attribute classA = pData.classAttribute();
 
