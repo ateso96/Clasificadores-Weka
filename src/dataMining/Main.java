@@ -50,10 +50,10 @@ public class Main {
 
 			/* Clasificadores */
 			/* 3.1. Inicializar clasificador kNN */
-			//IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
+			IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
 			
 			/* 3.2. Inicializar clasificador Random Forest */
-			RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
+			//RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
 			
 			/* 3.3. Inicializar clasificador OneR */
 			//OneR clasificador = Utilidades.getUtilidades().configurarOneR(newData);

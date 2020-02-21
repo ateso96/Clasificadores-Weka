@@ -7,6 +7,7 @@ import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.functions.SMO;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
@@ -21,6 +22,7 @@ import weka.core.Instances;
 import weka.core.ManhattanDistance;
 import weka.core.SelectedTag;
 import weka.core.SerializationHelper;
+import weka.core.Utils;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.core.neighboursearch.LinearNNSearch;
 import weka.filters.Filter;
@@ -418,6 +420,52 @@ public class Utilidades {
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/* BARRIDO DE PARAMETROS SMO */
+	
+	public SMO configurarSMO(Instances pData) throws Exception {
+		int bestFolds = 1; //Num vueltas
+		int bestI = 0;
+		double bestF = 0;
+
+		int maxI;
+		if (pData.numInstances() <= 150)
+			maxI = pData.numInstances();
+		else
+			maxI = (int) (pData.numInstances() * 0.4);
+
+		SMO cls = new SMO();
+		Evaluation eval;
+
+		System.out.println("Searching best parameters...\n");
+
+		for (int i = 1; i <= maxI; i++) {
+			cls.setMinNumObj(i);
+			for (int f = 1; f <= 10; f++) {
+				cls.setNumFolds(f);
+				cls.buildClassifier(pData);
+				eval = new Evaluation(pData);
+				eval.crossValidateModel(cls, pData, 10, new Random(1));
+				if (eval.fMeasure(0) > bestF) {
+					bestFolds = f;
+					bestI = i;
+					bestF = eval.fMeasure(0);
+				}
+			}
+		}
+
+		cls = new SMO();
+		cls.setNumFolds(bestFolds);
+		cls.setMinNumObj(bestI);
+		System.out.println("################################");
+		System.out.println("BEST J48 PARAMETERS:");
+		System.out.println("MIN NUM OBJECTS: " + bestI);
+		System.out.println("NUM FOLDS: " + bestFolds);
+		System.out.println("################################");
+		return cls;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private double getFMeasure(Evaluation pEval, Instances pData) {
 		Attribute classA = pData.classAttribute();
@@ -444,6 +492,12 @@ public class Utilidades {
 
 		fMeasure = fMeasure / pData.numInstances();
 		return fMeasure;
+	}
+	
+	public int getFreqMinClassIndex(Instances pData) {
+		int index = Utils.minIndex(pData.attributeStats(pData.classIndex()).nominalCounts);
+		
+		return index;
 	}
 
 }
