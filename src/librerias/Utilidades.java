@@ -126,11 +126,7 @@ public class Utilidades {
 
 		System.out.println("Searching best parameters...\n");
 
-		int kMax;
-		if (pData.numInstances() <= 150)
-			kMax = pData.numInstances();
-		else
-			kMax = (int) (pData.numInstances() * 0.4);
+		int kMax = (int) (pData.numInstances() * 0.4);
 
 		for (int k = 1; k <= kMax; k++) {
 			for (int w = 1; w <= 3; w++) {
