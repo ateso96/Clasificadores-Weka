@@ -122,6 +122,7 @@ public class Utilidades {
 		double bestF = 0;
 		IBk cls;
 		Evaluation eval;
+		int minIndex = getFreqMinClassIndex(pData);
 
 		System.out.println("Searching best parameters...\n");
 
@@ -139,11 +140,11 @@ public class Utilidades {
 						cls = getKNN(pData, k, d, w);
 						eval = new Evaluation(pData);
 						eval.crossValidateModel(cls, pData, 10, new Random(1));
-						if (eval.fMeasure(0) > bestF) {
+						if (eval.fMeasure(minIndex) > bestF) {
 							bestK = k;
 							bestDistance = d;
 							bestWeight = w;
-							bestF = eval.fMeasure(0);
+							bestF = eval.fMeasure(minIndex);
 						}
 					}
 				}
@@ -230,6 +231,7 @@ public class Utilidades {
 
 		RandomForest cls = new RandomForest();
 		Evaluation eval;
+		int minIndex = getFreqMinClassIndex(pData);
 
 		System.out.println("Searching best parameters...\n");
 
@@ -240,10 +242,10 @@ public class Utilidades {
 				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
 				eval.crossValidateModel(cls, pData, 10, new Random(1));
-				if (eval.fMeasure(0) > bestF) {
+				if (eval.fMeasure(minIndex) > bestF) {
 					bestK = k;
 					bestI = i;
-					bestF = eval.fMeasure(0);
+					bestF = eval.fMeasure(minIndex);
 				}
 			}
 			if (i % 100 == 0 && fAnt != 0.0) {
@@ -283,6 +285,7 @@ public class Utilidades {
 
 		OneR cls;
 		Evaluation eval;
+		int minIndex = getFreqMinClassIndex(pData);
 
 		System.out.println("Searching best parameters...\n");
 
@@ -291,7 +294,7 @@ public class Utilidades {
 			cls.setMinBucketSize(b);
 			eval = new Evaluation(pData);
 			eval.crossValidateModel(cls, pData, 10, new Random(1));
-			double fAct = eval.fMeasure(0);
+			double fAct = eval.fMeasure(minIndex);
 			if (fAct > bestF) {
 				bestB = b;
 				bestF = fAct;
@@ -317,6 +320,7 @@ public class Utilidades {
 
 		ZeroR cls;
 		Evaluation eval;
+		int minIndex = getFreqMinClassIndex(pData);
 
 		System.out.println("Searching best parameters...\n");
 
@@ -325,7 +329,7 @@ public class Utilidades {
 			cls.setBatchSize(String.valueOf(b));
 			eval = new Evaluation(pData);
 			eval.crossValidateModel(cls, pData, 10, new Random(1));
-			double fAct = eval.fMeasure(0);
+			double fAct = eval.fMeasure(minIndex);
 			if (fAct > bestF) {
 				bestB = b;
 				bestF = fAct;
@@ -351,6 +355,7 @@ public class Utilidades {
 
 		Bagging cls = new Bagging();
 		Evaluation eval;
+		int minIndex = getFreqMinClassIndex(pData);
 
 		System.out.println("Searching best parameters...\n");
 
@@ -359,9 +364,9 @@ public class Utilidades {
 			cls.buildClassifier(pData);
 			eval = new Evaluation(pData);
 			eval.crossValidateModel(cls, pData, 10, new Random(1));
-			if (eval.fMeasure(0) > bestF) {
+			if (eval.fMeasure(minIndex) > bestF) {
 				bestB = b;
-				bestF = eval.fMeasure(0);
+				bestF = eval.fMeasure(minIndex);
 			}
 		}
 
@@ -391,6 +396,7 @@ public class Utilidades {
 
 		J48 cls = new J48();
 		Evaluation eval;
+		int minIndex = getFreqMinClassIndex(pData);
 
 		System.out.println("Searching best parameters...\n");
 
@@ -401,10 +407,10 @@ public class Utilidades {
 				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
 				eval.crossValidateModel(cls, pData, 10, new Random(1));
-				if (eval.fMeasure(0) > bestF) {
+				if (eval.fMeasure(minIndex) > bestF) {
 					bestFolds = f;
 					bestI = i;
-					bestF = eval.fMeasure(0);
+					bestF = eval.fMeasure(minIndex);
 				}
 			}
 		}
@@ -431,6 +437,7 @@ public class Utilidades {
 		SMO cls = new SMO();
 		Evaluation eval;
 		PolyKernel kernel = new PolyKernel();
+		int minIndex = getFreqMinClassIndex(pData);
 
 		System.out.println("Searching best parameters...\n");
 
@@ -440,9 +447,9 @@ public class Utilidades {
 			cls.buildClassifier(pData);
 			eval = new Evaluation(pData);
 			eval.crossValidateModel(cls, pData, 10, new Random(1));
-			if (eval.fMeasure(0) > bestF) {
+			if (eval.fMeasure(minIndex) > bestF) {
 				bestE = e;
-				bestF = eval.fMeasure(0);
+				bestF = eval.fMeasure(minIndex);
 			}
 		}
 
