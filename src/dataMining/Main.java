@@ -4,6 +4,7 @@ import java.util.Random;
 
 import librerias.Utilidades;
 import weka.classifiers.Evaluation;
+import weka.classifiers.functions.SMO;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
@@ -50,7 +51,7 @@ public class Main {
 
 			/* Clasificadores */
 			/* 3.1. Inicializar clasificador kNN */
-			IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
+			//IBk clasificador = Utilidades.getUtilidades().configurarIBk(newData);
 			
 			/* 3.2. Inicializar clasificador Random Forest */
 			//RandomForest clasificador = Utilidades.getUtilidades().configurarRandomForest(newData);
@@ -66,6 +67,9 @@ public class Main {
 			
 			/* 3.6. Inicializar clasificador J48 */
 			//J48 clasificador = Utilidades.getUtilidades().configurarJ48(newData);
+			
+			/* 3.6. Inicializar clasificador SMO */
+			SMO clasificador = Utilidades.getUtilidades().configurarSMO(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CrossValidation */

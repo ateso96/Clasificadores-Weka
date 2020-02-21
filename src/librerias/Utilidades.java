@@ -8,6 +8,7 @@ import weka.attributeSelection.CfsSubsetEval;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.functions.supportVector.PolyKernel;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
@@ -219,7 +220,7 @@ public class Utilidades {
 	/* BARRIDO DE PARAMETROS RANDOM FOREST */
 
 	public RandomForest configurarRandomForest(Instances pData) throws Exception {
-		int numArboles = 1000;		 	//numIterations
+		int numArboles = 1000; // numIterations
 		int kMax = Double.valueOf(Math.sqrt(Double.valueOf(pData.numAttributes()))).intValue();
 
 		int bestI = 0;
@@ -235,7 +236,7 @@ public class Utilidades {
 		for (int i = 1; i <= numArboles; i++) {
 			cls.setNumIterations(i);
 			for (int k = 1; k <= kMax; k++) {
-				cls.setNumFeatures(k);  		//numFeatures
+				cls.setNumFeatures(k); // numFeatures
 				cls.buildClassifier(pData);
 				eval = new Evaluation(pData);
 				eval.crossValidateModel(cls, pData, 10, new Random(1));
@@ -378,7 +379,7 @@ public class Utilidades {
 	/* BARRIDO DE PARAMETROS J48 */
 
 	public J48 configurarJ48(Instances pData) throws Exception {
-		int bestFolds = 1; //Num vueltas
+		int bestFolds = 1; // Num vueltas
 		int bestI = 0;
 		double bestF = 0;
 
@@ -420,51 +421,41 @@ public class Utilidades {
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/* BARRIDO DE PARAMETROS SMO */
-	
-	public SMO configurarSMO(Instances pData) throws Exception {
-		int bestFolds = 1; //Num vueltas
-		int bestI = 0;
-		double bestF = 0;
 
-		int maxI;
-		if (pData.numInstances() <= 150)
-			maxI = pData.numInstances();
-		else
-			maxI = (int) (pData.numInstances() * 0.4);
+	/* BARRIDO DE PARAMETROS SMO */
+
+	public SMO configurarSMO(Instances pData) throws Exception {
+		int bestE = 0;
+		double bestF = -1.0;
 
 		SMO cls = new SMO();
 		Evaluation eval;
+		PolyKernel kernel = new PolyKernel();
 
 		System.out.println("Searching best parameters...\n");
 
-		for (int i = 1; i <= maxI; i++) {
-			cls.setMinNumObj(i);
-			for (int f = 1; f <= 10; f++) {
-				cls.setNumFolds(f);
-				cls.buildClassifier(pData);
-				eval = new Evaluation(pData);
-				eval.crossValidateModel(cls, pData, 10, new Random(1));
-				if (eval.fMeasure(0) > bestF) {
-					bestFolds = f;
-					bestI = i;
-					bestF = eval.fMeasure(0);
-				}
+		for (int e = 0; e <= 5; e++) {
+			kernel.setExponent(e);
+			cls.setKernel(kernel);
+			cls.buildClassifier(pData);
+			eval = new Evaluation(pData);
+			eval.crossValidateModel(cls, pData, 10, new Random(1));
+			if (eval.fMeasure(0) > bestF) {
+				bestE = e;
+				bestF = eval.fMeasure(0);
 			}
 		}
 
 		cls = new SMO();
-		cls.setNumFolds(bestFolds);
-		cls.setMinNumObj(bestI);
+		kernel.setExponent(bestE);
+		cls.setKernel(kernel);
 		System.out.println("################################");
-		System.out.println("BEST J48 PARAMETERS:");
-		System.out.println("MIN NUM OBJECTS: " + bestI);
-		System.out.println("NUM FOLDS: " + bestFolds);
+		System.out.println("BEST SMO PARAMETERS:");
+		System.out.println("KERNEL EXPONENT: " + bestE);
 		System.out.println("################################");
 		return cls;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private double getFMeasure(Evaluation pEval, Instances pData) {
@@ -493,10 +484,10 @@ public class Utilidades {
 		fMeasure = fMeasure / pData.numInstances();
 		return fMeasure;
 	}
-	
+
 	public int getFreqMinClassIndex(Instances pData) {
 		int index = Utils.minIndex(pData.attributeStats(pData.classIndex()).nominalCounts);
-		
+
 		return index;
 	}
 
