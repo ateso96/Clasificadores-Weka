@@ -355,7 +355,7 @@ public class Utilidades {
 
 		System.out.println("Searching best parameters...\n");
 
-		for (int b = 1; b <= 100; b++) {
+		for (int b = 10; b <= 100; b++) {
 			cls.setBagSizePercent(b);
 			cls.buildClassifier(pData);
 			eval = new Evaluation(pData);
