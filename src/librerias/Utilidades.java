@@ -12,6 +12,7 @@ import weka.classifiers.functions.supportVector.PolyKernel;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
+import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
@@ -455,6 +456,47 @@ public class Utilidades {
 		return cls;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/* BARRIDO DE PARAMETROS PART */
+	
+	public PART configurarPART(Instances pData) throws Exception {
+		int minObjects = 0;
+		double bestC = 0.0;
+		double bestF = -1.0;
+		
+		int minClassIndex = getFreqMinClassIndex(pData);
+		Evaluation eval;
+		PART cls;
+		
+		System.out.println("Searching best parameters...\n");
+		
+		for (int o = 1; o <= pData.numInstances() * 0.4; o++) {
+			cls = new PART();
+			cls.setMinNumObj(o);
+			for (double c = 0.05; c <= 0.5; c = c + 0.05)  {
+				cls.setConfidenceFactor((float) c);
+				eval = new Evaluation(pData);
+				cls.buildClassifier(pData);
+				eval.crossValidateModel(cls, pData, 10, new Random(1));
+				if (eval.fMeasure(minClassIndex) > bestF) {
+					minObjects = o;
+					bestC = c;
+					bestF = eval.fMeasure(minClassIndex);
+				}
+			}
+		}
+		cls = new PART();
+		cls.setMinNumObj(minObjects);
+		cls.setConfidenceFactor((float) bestC);
+		System.out.println("################################");
+		System.out.println("BEST PART PARAMETERS:");
+		System.out.println("MIN NUM OBJECTS: " + minObjects);
+		System.out.println("CONFIDANCE FACTOR: " + bestC);
+		System.out.println("################################");
+		return cls;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private double getFMeasure(Evaluation pEval, Instances pData) {

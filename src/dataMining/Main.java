@@ -8,6 +8,7 @@ import weka.classifiers.functions.SMO;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
+import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
@@ -63,13 +64,16 @@ public class Main {
 			//ZeroR clasificador = Utilidades.getUtilidades().configurarZeroR(newData);
 			
 			/* 3.5. Inicializar clasificador Bagging */
-			Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
+			//Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
 			
 			/* 3.6. Inicializar clasificador J48 */
 			//J48 clasificador = Utilidades.getUtilidades().configurarJ48(newData);
 			
 			/* 3.6. Inicializar clasificador SMO */
 			//SMO clasificador = Utilidades.getUtilidades().configurarSMO(newData);
+			
+			/* 3.7. Inicializar clasificador PART */
+			PART clasificador = Utilidades.getUtilidades().configurarPART(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CrossValidation */
