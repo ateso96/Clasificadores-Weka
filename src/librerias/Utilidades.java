@@ -17,6 +17,7 @@ import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
+import weka.classifiers.trees.RandomTree;
 import weka.core.Attribute;
 import weka.core.AttributeStats;
 import weka.core.ChebyshevDistance;
@@ -390,7 +391,7 @@ public class Utilidades {
 
 		J48 cls = new J48();
 		Evaluation eval;
-		int minIndex = getFreqMinClassIndex(pData);
+		int minIndex = getFreqMinClassIndex(pData);	
 
 		System.out.println("Searching best parameters...\n");
 
@@ -529,6 +530,47 @@ public class Utilidades {
 		System.out.println("################################");
 		System.out.println("BEST KSTAR PARAMETERS:");
 		System.out.println("GLOBAL BLEND: " + bestB);
+		System.out.println("################################");
+		return cls;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/* BARRIDO DE PARAMETROS RANDOM TREES */
+	
+	public RandomTree configurarRandomTree(Instances pData) throws Exception {
+		int numFolds = 0;
+		int bestK = 0;
+		double bestF = -1.0;
+		int minClassIndex = getFreqMinClassIndex(pData);
+		
+		RandomTree cls;
+		Evaluation eval;
+		
+		System.out.println("Searching best parameters...\n");
+		
+		for (int f = 2; f <= pData.numInstances() * 0.4; f++) {
+			cls = new RandomTree();
+			cls.setNumFolds(f);
+			for (int k = 0; k <= pData.numAttributes(); k++) {
+				cls.setKValue(k);
+				cls.buildClassifier(pData);
+				eval = new Evaluation(pData);
+				eval.crossValidateModel(cls, pData, 10, new Random(1));
+				if (eval.fMeasure(minClassIndex) > bestF) {
+					bestF = eval.fMeasure(minClassIndex);
+					bestK = k;
+					numFolds = f;
+				}
+			}
+		}
+		cls = new RandomTree();
+		cls.setKValue(bestK);
+		cls.setNumFolds(numFolds);
+		System.out.println("################################");
+		System.out.println("BEST RANDOM TREES PARAMETERS:");
+		System.out.println("KVALUE: " + bestK);
+		System.out.println("NUM FOLDS: " + numFolds);
 		System.out.println("################################");
 		return cls;
 	}

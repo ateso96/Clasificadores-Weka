@@ -13,6 +13,7 @@ import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
+import weka.classifiers.trees.RandomTree;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
@@ -77,7 +78,10 @@ public class Main {
 			//PART clasificador = Utilidades.getUtilidades().configurarPART(newData);
 			
 			/* 3.8. Inicializar clasificador KStar */
-			KStar clasificador = Utilidades.getUtilidades().configurarKStar(newData);
+			//KStar clasificador = Utilidades.getUtilidades().configurarKStar(newData);
+			
+			/* 3.9. Inicializar clasificador Random Tree */
+			RandomTree clasificador = Utilidades.getUtilidades().configurarRandomTree(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CrossValidation */
@@ -100,7 +104,7 @@ public class Main {
 			Utilidades.getUtilidades().guardarResultados(resultados, args[1]);
 
 			/* 6. Cargar modelo y hacer predicciones */
-			IBk clasificadorModelo = (IBk) SerializationHelper.read(args[2]);
+			SMO clasificadorModelo = (SMO) SerializationHelper.read(args[2]);
 			String predicciones = "=== Predicctions ===\n \ninst# --> instance atributes --> predicted" + "\n";
 			Instances dataPred = Utilidades.getUtilidades().filtrar(data); // Para que este filtrado
 			for (int i = 0; i < dataPred.numInstances(); i++) {
