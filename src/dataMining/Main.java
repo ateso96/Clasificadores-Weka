@@ -63,13 +63,13 @@ public class Main {
 			//ZeroR clasificador = Utilidades.getUtilidades().configurarZeroR(newData);
 			
 			/* 3.5. Inicializar clasificador Bagging */
-			//Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
+			Bagging clasificador = Utilidades.getUtilidades().configurarBagging(newData);
 			
 			/* 3.6. Inicializar clasificador J48 */
 			//J48 clasificador = Utilidades.getUtilidades().configurarJ48(newData);
 			
 			/* 3.6. Inicializar clasificador SMO */
-			SMO clasificador = Utilidades.getUtilidades().configurarSMO(newData);
+			//SMO clasificador = Utilidades.getUtilidades().configurarSMO(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CrossValidation */

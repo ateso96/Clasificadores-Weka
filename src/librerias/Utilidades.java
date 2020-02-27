@@ -119,7 +119,7 @@ public class Utilidades {
 		int bestK = 1;
 		int bestDistance = 1;
 		int bestWeight = 1;
-		double bestF = 0;
+		double bestF = -1.0;
 		IBk cls;
 		Evaluation eval;
 		int minIndex = getFreqMinClassIndex(pData);
@@ -222,7 +222,7 @@ public class Utilidades {
 
 		int bestI = 0;
 		int bestK = 0;
-		double bestF = 0;
+		double bestF = -1.0;
 		double fAnt = 0;
 
 		RandomForest cls = new RandomForest();
@@ -277,7 +277,7 @@ public class Utilidades {
 
 	public OneR configurarOneR(Instances pData) throws Exception {
 		int bestB = 0;
-		double bestF = 0;
+		double bestF = -1.0;
 
 		OneR cls;
 		Evaluation eval;
@@ -312,7 +312,7 @@ public class Utilidades {
 
 	public ZeroR configurarZeroR(Instances pData) throws Exception {
 		int bestB = 0;
-		double bestF = 0;
+		double bestF = -1.0;
 
 		ZeroR cls;
 		Evaluation eval;
@@ -346,8 +346,8 @@ public class Utilidades {
 	/* BARRIDO DE PARAMETROS BAGGING */
 
 	public Bagging configurarBagging(Instances pData) throws Exception {
-		int bestB = 0;
-		double bestF = 0;
+		int bestB = 1;
+		double bestF = -1.0;
 
 		Bagging cls = new Bagging();
 		Evaluation eval;
@@ -382,13 +382,9 @@ public class Utilidades {
 	public J48 configurarJ48(Instances pData) throws Exception {
 		int bestFolds = 1; // Num vueltas
 		int bestI = 0;
-		double bestF = 0;
+		double bestF = -1.0;
 
-		int maxI;
-		if (pData.numInstances() <= 150)
-			maxI = pData.numInstances();
-		else
-			maxI = (int) (pData.numInstances() * 0.4);
+		int maxI = (int) (pData.numInstances() * 0.4);
 
 		J48 cls = new J48();
 		Evaluation eval;
@@ -488,7 +484,7 @@ public class Utilidades {
 		return fMeasure;
 	}
 
-	public int getFreqMinClassIndex(Instances pData) {
+	private int getFreqMinClassIndex(Instances pData) {
 		int index = Utils.minIndex(pData.attributeStats(pData.classIndex()).nominalCounts);
 
 		return index;
