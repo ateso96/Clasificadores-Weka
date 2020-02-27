@@ -381,7 +381,7 @@ public class Utilidades {
 
 	public J48 configurarJ48(Instances pData) throws Exception {
 		int bestFolds = 1; // Num vueltas
-		int bestI = 0;
+		int bestI = 1;
 		double bestF = -1.0;
 
 		int maxI = (int) (pData.numInstances() * 0.4);
