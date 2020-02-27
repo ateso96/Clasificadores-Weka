@@ -10,6 +10,7 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.supportVector.PolyKernel;
 import weka.classifiers.lazy.IBk;
+import weka.classifiers.lazy.KStar;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.PART;
@@ -493,6 +494,41 @@ public class Utilidades {
 		System.out.println("BEST PART PARAMETERS:");
 		System.out.println("MIN NUM OBJECTS: " + minObjects);
 		System.out.println("CONFIDANCE FACTOR: " + bestC);
+		System.out.println("################################");
+		return cls;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/* BARRIDO DE PARAMETROS KSTAR */
+	
+	public KStar configurarKStar(Instances pData) throws Exception {
+		int bestB = -1;
+		double bestF = -1.0;
+		
+		int minClassIndex = getFreqMinClassIndex(pData);
+		
+		KStar cls;
+		Evaluation eval;
+		
+		System.out.println("Searching best parameters...\n");
+		
+		for (int b = 0; b <= 100; b++) {
+			cls = new KStar();
+			cls.setGlobalBlend(b);
+			cls.buildClassifier(pData);
+			eval = new Evaluation(pData);
+			eval.crossValidateModel(cls, pData, 10, new Random(1));
+			if (eval.fMeasure(minClassIndex) > bestF) {
+				bestB = b;
+				bestF = eval.fMeasure(minClassIndex);
+			}
+		}
+		cls = new KStar();
+		cls.setGlobalBlend(bestB);
+		System.out.println("################################");
+		System.out.println("BEST KSTAR PARAMETERS:");
+		System.out.println("GLOBAL BLEND: " + bestB);
 		System.out.println("################################");
 		return cls;
 	}

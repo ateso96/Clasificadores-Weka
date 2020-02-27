@@ -6,6 +6,7 @@ import librerias.Utilidades;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.lazy.IBk;
+import weka.classifiers.lazy.KStar;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.PART;
@@ -73,7 +74,10 @@ public class Main {
 			//SMO clasificador = Utilidades.getUtilidades().configurarSMO(newData);
 			
 			/* 3.7. Inicializar clasificador PART */
-			PART clasificador = Utilidades.getUtilidades().configurarPART(newData);
+			//PART clasificador = Utilidades.getUtilidades().configurarPART(newData);
+			
+			/* 3.8. Inicializar clasificador KStar */
+			KStar clasificador = Utilidades.getUtilidades().configurarKStar(newData);
 			
 			/* 4. Hacer la evaluación */
 			/* 4.1. CrossValidation */
